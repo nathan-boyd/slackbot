@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "slack-node": "^0.1.8"
+    "@slack/client": "^3.6.0"
+  },
+  "engines": {
+    "node": "4.2.6"
   }
 }
