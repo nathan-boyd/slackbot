@@ -1,22 +1,21 @@
-var SlackBot = require('slackbots')
+var Slack = require('slack-node')
+var apiToken = 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
 
-var bot = new SlackBot({
-  token: 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq',
-  name: 'case'
+var slack = new Slack(apiToken)
+
+slack.api('users.list', function (err, response) {
+  if (err) {
+    throw err
+  }
+  console.log(response)
 })
 
-bot.on('start', function () {
-  var params = {
-    icon_emoji: ':cat:'
+slack.api('chat.postMessage', {
+  text: 'hello from nodejs',
+  channel: '@nboyd'
+}, function (err, response) {
+  if (err) {
+    throw err
   }
-
-  bot.postMessageToUser('nboyd', 'meow!', params)
-})
-
-bot.on('message', function (message) {
-  var params = {
-    icon_emoji: ':cat:'
-  }
-
-  bot.postMessageToUser('nboyd', message, params)
+  console.log(response)
 })
