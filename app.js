@@ -1,4 +1,4 @@
-var SlackBot = require('slackbots');
+var SlackBot = require('slackbots')
 
 var bot = new SlackBot({
   token: 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq',
@@ -11,4 +11,12 @@ bot.on('start', function () {
   }
 
   bot.postMessageToUser('nboyd', 'meow!', params)
+})
+
+bot.on('message', function (message) {
+  var params = {
+    icon_emoji: ':cat:'
+  }
+
+  bot.postMessageToUser('nboyd', message, params)
 })
