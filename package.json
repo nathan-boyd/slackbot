@@ -1,0 +1,14 @@
+{
+  "name": "planning-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "slack-node": "^0.1.8"
+  }
+}
