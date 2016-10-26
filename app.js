@@ -7,10 +7,12 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS
 var RtmClient = require('@slack/client').RtmClient
 var VotingSession = require('./lib/votingSession')
+var CommandParser = require('./lib/commandParser')
 
 var app = express()
 var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
 var votingSession = new VotingSession()
+var commandParser = new CommandParser()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -31,7 +33,7 @@ app.post('/vote', function (req, res) {
     throw new Error(`invalid operation ${req.body.command}`)
   }
 
-  
+  var command = commandParser.parseCommand(req.body.text)
 
   // var argsValid = check.all(
   //   check.map(
@@ -54,7 +56,7 @@ app.post('/vote', function (req, res) {
     response_type: 'in_channel',
     'attachments': [
       {
-        'text': 'foo'
+        'text': command.type
       }
     ]
   }
