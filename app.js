@@ -1,6 +1,7 @@
 var bodyParser = require('body-parser')
 var express = require('express')
 var validator = require('validator')
+var check = require('check-types')
 
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS
@@ -9,6 +10,7 @@ var VotingSession = require('./lib/VotingSession')
 
 var app = express()
 var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
+var votingSession = new VotingSession()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -24,6 +26,27 @@ app.post('/vote', function (req, res) {
   if (req.body.token !== 'S9uz79qX2LB9dIhqIG18x2Ja'){
     throw new Error('invalid token')
   }
+
+  if (req.body.command !== '/vote') {
+    throw new Error(`invalid operation ${req.body.command}`)
+  }
+
+  // var argsValid = check.all(
+  //   check.map(
+  //     {
+  //       voterName: voterName,
+  //       vote: vote
+  //     },
+  //     {
+  //       voterName: (check.string, check.nonEmptyString),
+  //       vote: (check.assert.integer, check.assert.positive)
+  //     }
+  //   )
+  // )
+
+  // if (!argsValid) {
+  //   throw new Error('invalid arguments')
+  // }
 
   var body = {
     response_type: 'in_channel',
