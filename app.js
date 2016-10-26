@@ -35,6 +35,17 @@ app.post('/vote', function (req, res) {
 
   var command = commandParser.parseCommand(req.body.text)
 
+  console.dir(command)
+
+  // if (command.type = 'vote') {
+  //   votingSession.addVote(req.body.user_name, command.value)
+  // }
+
+  // if (command.type = 'reset') {
+  //   votingSession = new VotingSession()
+  // }  
+  
+
   // var argsValid = check.all(
   //   check.map(
   //     {
@@ -56,7 +67,7 @@ app.post('/vote', function (req, res) {
     response_type: 'in_channel',
     'attachments': [
       {
-        'text': command.type
+        'text': 'ok'
       }
     ]
   }
