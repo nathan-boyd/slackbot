@@ -21,7 +21,9 @@ app.get('/', function (req, res) {
 app.post('/vote', function (req, res) {
   console.log(req.body)
 
-  //todo validate
+  if (req.body.token !== 'S9uz79qX2LB9dIhqIG18x2Ja'){
+    throw new Error('invalid token')
+  }
 
   var body = {
     response_type: 'in_channel',
