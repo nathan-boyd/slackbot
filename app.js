@@ -6,7 +6,7 @@ var check = require('check-types')
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS
 var RtmClient = require('@slack/client').RtmClient
-var VotingSession = require('./lib/VotingSession')
+var VotingSession = require('./lib/votingSession')
 
 var app = express()
 var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
@@ -30,6 +30,8 @@ app.post('/vote', function (req, res) {
   if (req.body.command !== '/vote') {
     throw new Error(`invalid operation ${req.body.command}`)
   }
+
+  
 
   // var argsValid = check.all(
   //   check.map(

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 var expect = require('chai').expect
-var VotingSession = require('../lib/VotingSession')
+var VotingSession = require('../lib/votingSession')
 
 describe('VotingSession', function () {
 
