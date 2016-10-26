@@ -1,13 +1,15 @@
+var bodyParser = require('body-parser')
 var express = require('express')
+var validator = require('validator')
 
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS
 var RtmClient = require('@slack/client').RtmClient
+var VotingSession = require('./lib/VotingSession')
 
-var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
 var app = express()
+var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
 
-var bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('port', (process.env.PORT || 9001))
@@ -16,8 +18,10 @@ app.get('/', function (req, res) {
   res.json('ok')
 })
 
-app.post('/', function (req, res) {
+app.post('/vote', function (req, res) {
   console.log(req.body)
+
+  //todo validate
 
   var body = {
     response_type: 'in_channel',
