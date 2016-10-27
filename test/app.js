@@ -8,10 +8,12 @@ var request = require('supertest')
 
 describe('app tests', function () {
 
-  var voteRequestBody = null
+  var app = null
+  var votePayload = null
 
   beforeEach(function () {
-    voteRequestBody = {
+    app = createApp()
+    votePayload = {
       token: 'S9uz79qX2LB9dIhqIG18x2Ja',
       team_id: 'T2NCVEXJA',
       team_domain: 'dataextensions',
@@ -23,21 +25,16 @@ describe('app tests', function () {
       text: '9',
       response_url: 'https://hooks.slack.com/commands/T2NCVEXJA/96739914134/3tgT0gB9mH2dCmEBbCGF5Mxt'
     }
-
   })
 
   describe('valid vote request', function () {
-    var app = createApp()
-
     it('should return a 400 when token is invalid', function (done) {
-
-      var badRequest = voteRequestBody;
-      badRequest.token = 'foo'
+      votePayload.token = 'foo'
 
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
-        .send(JSON.stringify(badRequest))
+        .send(JSON.stringify(votePayload))
         .end(function (req, res) {
           expect(res.status).to.equal(400)
           done()
@@ -45,18 +42,33 @@ describe('app tests', function () {
     })
   })
 
-  describe('valid vote request', function () {
-    var app = createApp()
-
-    it('should return a 200 status code', function (done) {
+  describe('valid vote', function () {
+    it('should respond with vote counted', function (done) {
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
-        .send(JSON.stringify(voteRequestBody))
+        .send(JSON.stringify(votePayload))
         .end(function (req, res) {
           expect(res.status).to.equal(200)
+          expect(res.body.attachments[0].text === 'vote counted').to.be.true
           done()
         })
     })
   })
+
+  // describe('vote start', function () {
+  //   it('should aknowledge that polling has started', function (done) {
+  //     votePayload.text = 'start "new story"'
+
+  //     request(app)
+  //       .post('/vote')
+  //       .set('content-type', 'application/json')
+  //       .send(JSON.stringify(votePayload))
+  //       .end(function (req, res) {
+  //         expect(res.status).to.equal(200)
+  //         expect(res.body.attachments[0].text === 'started voting for "new story"').to.be.true
+  //         done()
+  //       })
+  //   })
+  // })
 })

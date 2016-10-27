@@ -37,21 +37,12 @@ function createApp () {
 
     validate.then(function (){
       var command = commandParser.parseCommand(req.body.text)
-
-      console.dir(command)
-
-      if (command.type === 'vote') {
-        votingSession.addVote(req.body.user_name, command.value)
-      }
-
-      var body = {
-        response_type: 'in_channel',
-        'attachments': [{
-          'text': 'ok'
-        }]
-      }
-
-      res.json(body)
+      handleRequest(req, command, function (err, response) {
+        if (err) {
+          console.log(err)
+        }
+        res.json(response)
+      })
     })
 
     validate.catch(function (err) {
@@ -61,6 +52,35 @@ function createApp () {
   })
 
   return app
+}
+
+function handleRequest (req, command, callback) {
+  var responseBody = null
+
+  console.log(command)
+  
+  if (command.type === 'vote') {
+    votingSession.addVote(req.body.user_name, command.value)
+    responseBody = {
+      response_type: 'in_channel',
+      'attachments': [{
+        'text': 'vote counted'
+      }]
+    }
+  }
+
+  //  else if (command.type === 'start') {
+  //   responseBody = {
+  //     response_type: 'in_channel',
+  //     'attachments': [{
+  //       'text': `started voting for ${command.value.name}`
+  //     }]
+  //   }
+  // }
+
+
+  console.log(responseBody)
+  callback(responseBody)
 }
 
 function validateRequest (req, callback) {
