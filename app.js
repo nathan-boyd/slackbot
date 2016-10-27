@@ -55,32 +55,19 @@ function createApp () {
 }
 
 function handleRequest (req, command, callback) {
-  var responseBody = null
-
-  console.log(command)
-  
-  if (command.type === 'vote') {
-    votingSession.addVote(req.body.user_name, command.value)
-    responseBody = {
-      response_type: 'in_channel',
-      'attachments': [{
-        'text': 'vote counted'
-      }]
-    }
+  var responseBody = {
+    response_type: 'in_channel',
+    'attachments': []
   }
 
-  //  else if (command.type === 'start') {
-  //   responseBody = {
-  //     response_type: 'in_channel',
-  //     'attachments': [{
-  //       'text': `started voting for ${command.value.name}`
-  //     }]
-  //   }
-  // }
+  if (command.type === 'vote') {
+    votingSession.addVote(req.body.user_name, command.value)
+    responseBody.attachments.push({'text': 'vote counted'})
+  } else if (command.type === 'start') {
+    responseBody.attachments.push({'text': `started voting for ${command.value.name}`})
+  }
 
-
-  console.log(responseBody)
-  callback(responseBody)
+  callback(null, responseBody)
 }
 
 function validateRequest (req, callback) {

@@ -22,7 +22,7 @@ describe('app tests', function () {
       user_id: 'U2NJHQS3E',
       user_name: 'nboyd',
       command: '/vote',
-      text: '9',
+      text: '5',
       response_url: 'https://hooks.slack.com/commands/T2NCVEXJA/96739914134/3tgT0gB9mH2dCmEBbCGF5Mxt'
     }
   })
@@ -56,19 +56,19 @@ describe('app tests', function () {
     })
   })
 
-  // describe('vote start', function () {
-  //   it('should aknowledge that polling has started', function (done) {
-  //     votePayload.text = 'start "new story"'
+  describe('vote start', function () {
+    it('should aknowledge that polling has started', function (done) {
+      votePayload.text = 'start "new story"'
 
-  //     request(app)
-  //       .post('/vote')
-  //       .set('content-type', 'application/json')
-  //       .send(JSON.stringify(votePayload))
-  //       .end(function (req, res) {
-  //         expect(res.status).to.equal(200)
-  //         expect(res.body.attachments[0].text === 'started voting for "new story"').to.be.true
-  //         done()
-  //       })
-  //   })
-  // })
+      request(app)
+        .post('/vote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(votePayload))
+        .end(function (req, res) {
+          expect(res.status).to.equal(200)
+          expect(res.body.attachments[0].text === 'started voting for "new story"').to.be.true
+          done()
+        })
+    })
+  })
 })
