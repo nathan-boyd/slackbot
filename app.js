@@ -15,38 +15,49 @@ module.exports = createApp
 function createApp () {
   var app = express()
   app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }))
 
   app.get('/', function (req, res) {
     res.json('ok')
   })
 
   app.post('/vote', function (req, res) {
-    validateRequest(req, function (err) {
-      if (err) {
-        console.log(err)
-        res.sendStatus(400)
+    var validate = new Promise(
+      function (resolve, reject) {
+        validateRequest(req, function (err) {
+          if (err) {
+            reject(err)
+          }
+          resolve()
+        })
       }
+    )
+
+    validate.then(function (){
+      var command = commandParser.parseCommand(req.body.text)
+
+      console.dir(command)
+
+      if (command.type === 'vote') {
+        votingSession.addVote(req.body.user_name, command.value)
+      }
+
+      var body = {
+        response_type: 'in_channel',
+        'attachments': [{
+          'text': 'ok'
+        }]
+      }
+
+      res.json(body)
     })
 
-    var command = commandParser.parseCommand(req.body.text)
-
-    console.dir(command)
-
-    if (command.type == 'vote') {
-      votingSession.addVote(req.body.user_name, command.value)
-    }
-
-    var body = {
-      response_type: 'in_channel',
-      'attachments': [
-        {
-          'text': 'ok'
-        }
-      ]
-    }
-
-    res.json(body)
+    validate.catch(function (err) {
+      console.log(err)
+      res.sendStatus(400)
+    })
   })
 
   return app
@@ -54,12 +65,10 @@ function createApp () {
 
 function validateRequest (req, callback) {
   if (req.body.token !== 'S9uz79qX2LB9dIhqIG18x2Ja') {
-    console.log('token error')
     callback(new Error('invalid token'))
   }
 
   if (req.body.command !== '/vote') {
-    console.log('command error')
     callback(new Error(`invalid operation ${req.body.command}`))
   }
 
