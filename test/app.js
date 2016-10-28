@@ -71,4 +71,44 @@ describe('app tests', function () {
         })
     })
   })
+
+  describe('vote tally', function () {
+
+    var testVotes = [
+      {name: 'bob', vote: '5'},
+      {name: 'sue', vote: '3'},
+      {name: 'hal', vote: '1'}
+    ]
+
+    before(function () {
+      testVotes.forEach(function (testVote) {
+        votePayload.user_name = testVote.name
+        votePayload.text = testVote.vote
+
+        request(app)
+          .post('/vote')
+          .set('content-type', 'application/json')
+          .send(JSON.stringify(votePayload))
+          .end(function (req, res) {
+            expect(res.status).to.equal(200)
+            expect(res.body.attachments[0].text === 'vote counted').to.be.true
+          })
+      })
+    })
+
+    it('should return a voting summary', function (done) {
+
+      votePayload.text = 'tally'
+
+      request(app)
+        .post('/vote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(votePayload))
+        .end(function (req, res) {
+          expect(res.status).to.equal(200)
+          console.dir(JSON.stringify(res.body))
+          done()
+        })
+    })
+  })
 })

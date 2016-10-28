@@ -6,7 +6,6 @@ var check = require('check-types')
 var VotingSession = require('./lib/votingSession')
 var CommandParser = require('./lib/commandParser')
 
-var token = process.env.SLACK_API_TOKEN || 'xoxb-95783990691-0eFye0weAOaYzz9SGYiNTUEq'
 var votingSession = new VotingSession()
 var commandParser = new CommandParser()
 
@@ -54,6 +53,15 @@ function createApp () {
   return app
 }
 
+function buildTallyResponse () {
+  var tally = votingSession.tallyVotes()
+  var response = `Votes For: ${votingSession.storyName}`
+  tally.votes.forEach(function (vote) {
+    response = `${response}\n  ${vote.name}: ${vote.vote}`
+  })
+  return response
+}
+
 function handleRequest (req, command, callback) {
   var responseBody = {
     response_type: 'in_channel',
@@ -64,9 +72,12 @@ function handleRequest (req, command, callback) {
     votingSession.addVote(req.body.user_name, command.value)
     responseBody.attachments.push({'text': 'vote counted'})
   } else if (command.type === 'start') {
+    votingSession = new VotingSession(command.value.name)
     responseBody.attachments.push({'text': `started voting for ${command.value.name}`})
+  } else if (command.type === 'tally') {
+    var response = buildTallyResponse()
+    responseBody.attachments.push({'text': `${response}`})
   }
-
   callback(null, responseBody)
 }
 
