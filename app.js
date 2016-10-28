@@ -77,6 +77,8 @@ function handleRequest (req, command, callback) {
   } else if (command.type === 'tally') {
     var response = buildTallyResponse()
     responseBody.attachments.push({'text': `${response}`})
+  } else if (command.type === 'invalid') {
+    responseBody.attachments.push({'text': 'Invalid Request\n valid examples include: /vote 1\n /vote start "story name" /vote tally'})
   }
   callback(null, responseBody)
 }

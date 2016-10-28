@@ -3,7 +3,6 @@
 var createApp = require('../app')
 
 var expect = require('chai').expect
-var mocha = require('mocha')
 var request = require('supertest')
 
 describe('app tests', function () {
@@ -27,7 +26,7 @@ describe('app tests', function () {
     }
   })
 
-  describe('valid vote request', function () {
+  describe('invalid vote request', function () {
     it('should return a 400 when token is invalid', function (done) {
       votePayload.token = 'foo'
 
