@@ -55,7 +55,7 @@ function createApp () {
 
 function buildTallyResponse () {
   var tally = votingSession.tallyVotes()
-  var response = `Votes For: ${votingSession.storyName}`
+  var response = `Votes For: ${votingSession.storyName}\n Average: ${tally.average}`
   tally.votes.forEach(function (vote) {
     response = `${response}\n  ${vote.name}: ${vote.vote}`
   })
