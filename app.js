@@ -34,7 +34,7 @@ function createApp () {
       }
     )
 
-    validate.then(function (){
+    validate.then(function () {
       var command = commandParser.parseCommand(req.body.text)
       handleRequest(req, command, function (err, response) {
         if (err) {
@@ -77,6 +77,8 @@ function handleRequest (req, command, callback) {
   } else if (command.type === 'tally') {
     var response = buildTallyResponse()
     responseBody.attachments.push({'text': `${response}`})
+  } else if (command.type === 'reset') {
+    votingSession.reset()
   } else if (command.type === 'invalid') {
     responseBody.attachments.push({'text': "Invalid Request. Try one of these\n\
     /vote start 'story name'\n\

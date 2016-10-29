@@ -16,17 +16,14 @@ function onListening () {
   console.log('http server listening on port ' + server.address().port)
 
   process.on('uncaughtException', function onUncaughtException (error) {
-    // Exit in 30 seconds if still alive
     var timer = setTimeout(function () {
       process.exit(1)
     }, 30000)
     timer.unref()
 
-    // Write error
     console.error('Uncaught exception: ' + error.stack)
 
     if (listening) {
-      // Stop the HTTP server
       server.close()
       listening = false
     }
