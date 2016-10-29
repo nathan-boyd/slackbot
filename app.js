@@ -73,7 +73,7 @@ function handleRequest (req, command, callback) {
     responseBody.attachments.push({'text': 'vote counted'})
   } else if (command.type === 'start') {
     votingSession = new VotingSession(command.value.name)
-    responseBody.attachments.push({'text': `started voting for ${command.value.name}`})
+    responseBody.attachments.push({'text': `Voting has started for ${command.value.name}`})
   } else if (command.type === 'tally') {
     var response = buildTallyResponse()
     responseBody.attachments.push({'text': `${response}`})
