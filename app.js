@@ -76,6 +76,7 @@ function handleRequest (req, command, callback) {
     responseBody.attachments.push({'text': `Voting has started for ${command.value.name}`})
   } else if (command.type === 'tally') {
     var response = buildTallyResponse()
+    votingSession.reset()
     responseBody.attachments.push({'text': `${response}`})
   } else if (command.type === 'reset') {
     votingSession.reset()
