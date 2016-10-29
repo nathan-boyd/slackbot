@@ -55,11 +55,15 @@ function createApp () {
 
 function buildTallyResponse () {
   var tally = votingSession.tallyVotes()
-  var response = `Votes For: ${votingSession.storyName}\n Average: ${tally.average}`
+  var response = `Voting session ended for: ${votingSession.storyName}\n Average: ${tally.average}`
   tally.votes.forEach(function (vote) {
     response = `${response}\n  ${vote.name}: ${vote.vote}`
   })
   return response
+}
+
+function isEmpty(str) {
+    return (!str || 0 === str.length);
 }
 
 function handleRequest (req, command, callback) {
@@ -69,16 +73,27 @@ function handleRequest (req, command, callback) {
   }
 
   if (command.type === 'vote') {
+    if (isEmpty(votingSession.storyName)) {
+      responseBody.attachments.push({'text': 'Voting session has not started'})
+      return callback(null, responseBody)
+    }
+
     votingSession.addVote(req.body.user_name, command.value)
     responseBody.attachments.push({'text': 'vote counted'})
   } else if (command.type === 'start') {
     votingSession = new VotingSession(command.value.name)
     responseBody.attachments.push({'text': `Voting has started for ${command.value.name}`})
   } else if (command.type === 'tally') {
+    if (isEmpty(votingSession.storyName)) {
+      responseBody.attachments.push({'text': 'Voting session has not started'})
+      return callback(null, responseBody)
+    }
+
     var response = buildTallyResponse()
     votingSession.reset()
     responseBody.attachments.push({'text': `${response}`})
   } else if (command.type === 'reset') {
+    responseBody = 'Voting session reset for'
     votingSession.reset()
   } else if (command.type === 'invalid') {
     responseBody.attachments.push({'text': "Invalid Request. Try one of these\n\
