@@ -41,8 +41,21 @@ describe('app tests', function () {
     })
   })
 
-  describe('valid vote', function () {
+  describe('valid vote after voting session started', function () {
+
     it('should respond with vote counted', function (done) {
+
+      votePayload.text = 'start "new story"'
+      request(app)
+        .post('/vote')
+        .set('content-type', 'application/json')
+        .send(JSON.stringify(votePayload))
+        .end(function (req, res) {
+          expect(res.status).to.equal(200)
+        })
+
+      votePayload.text = '5'
+
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
@@ -58,21 +71,19 @@ describe('app tests', function () {
   describe('vote start', function () {
     it('should aknowledge that polling has started', function (done) {
       votePayload.text = 'start "new story"'
-
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
         .send(JSON.stringify(votePayload))
         .end(function (req, res) {
           expect(res.status).to.equal(200)
-          expect(res.body.attachments[0].text === 'started voting for "new story"').to.be.true
+          expect(res.body.attachments[0].text.indexOf('Voting has started') !== -1).to.be.true
           done()
         })
     })
   })
 
   describe('vote tally', function () {
-
     var testVotes = [
       {name: 'bob', vote: '5'},
       {name: 'sue', vote: '3'},
