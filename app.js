@@ -22,17 +22,8 @@ function createApp () {
   })
 
   app.post('/vote', function (req, res) {
-    var validate = new Promise(
-      function (resolve, reject) {
-        requestValidator.validateRequest(req, function (err) {
-          if (err) {
-            reject(err)
-          }
-          resolve()
-        })
-      }
-    )
 
+    var validate = requestValidator.validate(req)
     validate.then(function () {
       var command = commandParser.parseCommand(req.body.text)
       commandHandler.handleRequest(req, command, function (err, response) {
