@@ -17,24 +17,21 @@ function createApp () {
     extended: true
   }))
 
-  app.get('/', function (req, res) {
+  app.get('/', (req, res) => {
     res.json('ok')
   })
 
-  app.post('/vote', function (req, res) {
-
-    var validate = requestValidator.validate(req).then(function () {
+  app.post('/vote', (req, res) => {
+    requestValidator.validate(req).then(() => {
       return commandParser.parse(req.body.text)
-    }).then(function (command) { 
-      commandHandler.handleRequest(req, command, function (err, response) {
-        if (err) {
-          console.log(err)
-        }
-        res.json(response)
-      })
-    })
+    }).then((command) => {
+
+      /* todo add user name to command */
       
-    validate.catch(function (err) {
+      return commandHandler.handle(req.body.user_name, command)
+    }).then((handlerResponse) => {
+      res.json(handlerResponse)
+    }).catch((err) => {
       console.log(err)
       res.sendStatus(400)
     })
