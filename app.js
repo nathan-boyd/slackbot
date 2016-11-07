@@ -23,9 +23,9 @@ function createApp () {
 
   app.post('/vote', function (req, res) {
 
-    var validate = requestValidator.validate(req)
-    validate.then(function () {
-      var command = commandParser.parseCommand(req.body.text)
+    var validate = requestValidator.validate(req).then(function () {
+      return commandParser.parse(req.body.text)
+    }).then(function (command) { 
       commandHandler.handleRequest(req, command, function (err, response) {
         if (err) {
           console.log(err)
@@ -33,7 +33,7 @@ function createApp () {
         res.json(response)
       })
     })
-
+      
     validate.catch(function (err) {
       console.log(err)
       res.sendStatus(400)
