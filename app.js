@@ -23,12 +23,9 @@ function createApp () {
 
   app.post('/vote', (req, res) => {
     requestValidator.validate(req).then(() => {
-      return commandParser.parse(req.body.text)
+      return commandParser.parse(req.body)
     }).then((command) => {
-
-      /* todo add user name to command */
-      
-      return commandHandler.handle(req.body.user_name, command)
+      return commandHandler.handle(command)
     }).then((handlerResponse) => {
       res.json(handlerResponse)
     }).catch((err) => {

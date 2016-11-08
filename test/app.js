@@ -6,7 +6,6 @@ var expect = require('chai').expect
 var request = require('supertest')
 
 describe('app tests', function () {
-
   var app = null
   var votePayload = null
 
@@ -29,7 +28,6 @@ describe('app tests', function () {
   describe('invalid vote request', function () {
     it('should return a 400 when token is invalid', function (done) {
       votePayload.token = 'foo'
-
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
@@ -42,29 +40,29 @@ describe('app tests', function () {
   })
 
   describe('valid vote after voting session started', function () {
-
     it('should respond with vote counted', function (done) {
-
-      votePayload.text = 'start "new story"'
-      request(app)
-        .post('/vote')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(votePayload))
-        .end(function (req, res) {
-          expect(res.status).to.equal(200)
-        })
-
-      votePayload.text = '5'
-
-      request(app)
-        .post('/vote')
-        .set('content-type', 'application/json')
-        .send(JSON.stringify(votePayload))
-        .end(function (req, res) {
-          expect(res.status).to.equal(200)
-          expect(res.body.attachments[0].text === 'vote counted').to.be.true
-          done()
-        })
+      new Promise((resolve, reject) => {
+        votePayload.text = 'start new story'
+        request(app)
+          .post('/vote')
+          .set('content-type', 'application/json')
+          .send(JSON.stringify(votePayload))
+          .end(function (req, res) {
+            expect(res.status).to.equal(200)
+            resolve()
+          })
+      }).then(() => {
+        votePayload.text = '5'
+        request(app)
+          .post('/vote')
+          .set('content-type', 'application/json')
+          .send(JSON.stringify(votePayload))
+          .end(function (req, res) {
+            expect(res.status).to.equal(200)
+            expect(res.body.attachments[0].text === 'vote counted').to.be.true
+          })
+        done()
+      })
     })
   })
 
@@ -91,25 +89,34 @@ describe('app tests', function () {
     ]
 
     before(function () {
-      testVotes.forEach(function (testVote) {
-        votePayload.user_name = testVote.name
-        votePayload.text = testVote.vote
-
+      new Promise((resolve, reject) => {
+        votePayload.text = 'start new story'
         request(app)
           .post('/vote')
           .set('content-type', 'application/json')
           .send(JSON.stringify(votePayload))
           .end(function (req, res) {
             expect(res.status).to.equal(200)
-            expect(res.body.attachments[0].text === 'vote counted').to.be.true
+            resolve()
           })
+      }).then(() => {
+        testVotes.forEach(function (testVote) {
+          votePayload.user_name = testVote.name
+          votePayload.text = testVote.vote
+          request(app)
+            .post('/vote')
+            .set('content-type', 'application/json')
+            .send(JSON.stringify(votePayload))
+            .end(function (req, res) {
+              expect(res.status).to.equal(200)
+              expect(res.body.attachments[0].text === 'vote counted').to.be.true
+            })
+        })
       })
     })
 
     it('should return a voting summary', function (done) {
-
       votePayload.text = 'tally'
-
       request(app)
         .post('/vote')
         .set('content-type', 'application/json')
