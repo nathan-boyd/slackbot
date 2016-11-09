@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node server"
+    "start": "node server",
+    "test": "mocha",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +19,7 @@
     "validator": "^6.1.0"
   },
   "engines": {
-    "node": "4.2.6"
+    "node": "6.9.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
