@@ -25,7 +25,7 @@ function createApp () {
     requestValidator.validate(req).then(() => {
       return commandParser.parse(req.body)
     }).then((command) => {
-      return commandHandler.handle(command)
+      return commandHandler.handle(req.body.user_name, command)
     }).then((handlerResponse) => {
       res.json(handlerResponse)
     }).catch((err) => {

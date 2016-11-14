@@ -59,9 +59,10 @@ describe('app tests', function () {
           .send(JSON.stringify(votePayload))
           .end(function (req, res) {
             expect(res.status).to.equal(200)
-            expect(res.body.attachments[0].text === 'vote counted').to.be.true
+            debugger
+            expect(res.body.text === 'vote counted').to.be.true
+            done()
           })
-        done()
       })
     })
   })
